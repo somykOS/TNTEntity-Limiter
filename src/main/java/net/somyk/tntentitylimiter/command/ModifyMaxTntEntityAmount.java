@@ -17,7 +17,7 @@ public class ModifyMaxTntEntityAmount {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment){
         dispatcher.register(literal(MOD_ID)
-                .requires(source -> Permissions.check(source, MOD_ID+".modify"))
+                .requires(source -> Permissions.check(source, MOD_ID+".modify") || source.hasPermissionLevel(2))
                 .then(argument("value", IntegerArgumentType.integer(0))
                         .executes(context -> {
                             try {
