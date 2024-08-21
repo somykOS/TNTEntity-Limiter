@@ -1,8 +1,9 @@
 package net.somyk.tntentitylimiter.mixin;
 
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
-import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,21 +13,23 @@ import static net.somyk.tntentitylimiter.ModConfig.*;
 import static net.somyk.tntentitylimiter.TntEntityLimiter.*;
 
 @Mixin(TntEntity.class)
-public class TntEntityMixin {
+public abstract class TntEntityMixin {
 
-
-    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void freezeTntEntity(CallbackInfo ci){
+    @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V", at = @At("TAIL"))
+    private void increaseCount(World world, double x, double y, double z, LivingEntity igniter, CallbackInfo ci){
         TntEntity tntEntity = (TntEntity) (Object) this;
-        if(activeSet.size() < getIntegerValue(maxPrimedTntAmount)) {
-            activeSet.add(tntEntity.getUuid());
-        }
-        if (!activeSet.contains(tntEntity.getUuid())){
-            if(tntEntity.getWorld() instanceof ServerWorld world) {
-                world.getChunkManager().sendToNearbyPlayers(tntEntity,
-                        new EntitySpawnS2CPacket(tntEntity, 1, tntEntity.getBlockPos()));
-            }
-            ci.cancel();
+        activeSet.add(tntEntity.getUuid());
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void stopTnt(CallbackInfo ci){
+        TntEntity tntEntity = (TntEntity) (Object) this;
+        if(activeSet.size() > getIntegerValue(maxPrimedTntAmount)){
+//            PlayerEntity playerEntity = tntEntity.getWorld().getClosestPlayer(tntEntity.getX(), tntEntity.getY(), tntEntity.getZ(), -1, false);
+//            if (playerEntity != null) playerEntity.giveItemStack(Items.TNT.getDefaultStack());
+            tntEntity.kill();
+            tntEntity.getWorld().setBlockState(tntEntity.getBlockPos(), Blocks.TNT.getDefaultState());
+            activeSet.remove(tntEntity.getUuid());
         }
     }
 

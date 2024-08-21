@@ -22,6 +22,8 @@ public class ModConfig {
         }
     }
 
+    public static void load(){}
+
     private static void initializeConfig() throws IOException {
         if (!config.exists()) {
             config.createNewFile();

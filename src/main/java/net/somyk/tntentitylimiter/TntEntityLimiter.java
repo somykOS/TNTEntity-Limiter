@@ -19,6 +19,7 @@ public class TntEntityLimiter implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModConfig.load();
 		CommandRegistrationCallback.EVENT.register(ModifyMaxTntEntityAmount::register);
 	}
 }
