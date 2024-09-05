@@ -3,7 +3,6 @@
   "package": "net.somyk.tntentitylimiter.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "TntEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
