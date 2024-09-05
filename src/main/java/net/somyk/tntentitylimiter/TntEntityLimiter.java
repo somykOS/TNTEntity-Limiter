@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import static net.somyk.tntentitylimiter.ModConfig.*;
 
 public class TntEntityLimiter implements ModInitializer {
-	public static final String MOD_ID = "tntentitylimiter";
+	public static final String MOD_ID = "tnt-entity-limiter";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static Queue<UUID> activeSet = new ConcurrentLinkedQueue<>();
